@@ -1,0 +1,105 @@
+import { ConnectServerPage } from "pages/add-server.slint";
+import { ListDevicesPage } from "pages/devices/index.slint";
+import { OpenFABDevice } from "pages/devices/card.slint";
+
+export component AppView inherits Window {
+    in-out property <string> current-page;
+    in-out property <string> access_token;
+    in-out property <[OpenFABDevice]> device-list;
+    connectServer := ConnectServerPage {
+        visible: root.current-page == "connect-server";
+    }
+    callback login <=> connectServer.login;
+
+    preferred-width: 700px;
+    preferred-height: 500px;
+    
+    menu := MenuBar {
+        Menu {
+            title: @tr("MenuBar" => "Server");
+            MenuItem {
+                title: @tr("MenuBar" => "Connect");
+                shortcut: @keys(Control + C);
+                activated => {
+                    current-page = "connect-server";
+                    
+                };
+            }
+            MenuItem {
+                title: @tr("MenuBar" => "Account");
+            }
+            MenuItem {
+                title: @tr("MenuBar" => "Switch Account");
+                shortcut: @keys(Control + Shift + A);
+            }
+
+            MenuItem {
+                title: @tr("MenBar" => "Logout");
+                shortcut: @keys(Control + Q);
+            }
+        }
+
+        Menu {
+            title: @tr("MenuBar" => "Library");
+            MenuItem {
+                title: @tr("MenuBar" => "Browse");
+                activated => {
+                    current-page = "browse-libraries";
+                }
+            }
+            MenuItem {
+                title: @tr("MenuBar" => "Import");
+                shortcut: @keys(Control + I);
+            }
+
+            MenuItem {
+                title: @tr("MenuBar" => "Upload");
+                shortcut: @keys(Control + Shift + U);
+            }
+        }
+
+        Menu {
+            title: @tr("MenuBar" => "Devices");
+            MenuItem {
+                title: @tr("MenuBar" => "Status");
+            }
+            MenuItem {
+                title: @tr("MenuBar" => "Show All");
+                activated => {
+                    current-page = "devices";
+                }
+            }
+
+            MenuItem {
+                title: @tr("MenuBar" => "Connect");
+            }
+            MenuItem {
+                title: @tr("MenuBar" => "Scan");
+            }
+            MenuItem {
+                title: @tr("MenuBar" => "Remove");
+            }
+        }
+
+        Menu {
+            title: @tr("MenuBar" => "Prints");
+            MenuItem {
+                title: @tr("MenuBar" => "Status");
+            }
+            MenuItem {
+                title: @tr("MenuBar" => "Create");
+            }
+            MenuItem {
+                title: @tr("MenuBar" => "Queue");
+            }
+            MenuItem {
+                title: @tr("MenuBar" => "Remove");
+            }
+        }
+
+    }
+
+    //if(self.current-page != "connect-server"): root.connectServer.visible = false;
+    if(self.current-page == "devices"): ListDevicesPage { devices: root.device-list; }
+    //if(root.current-item == 'connect-device'): ConnectDevicePage {}
+}
